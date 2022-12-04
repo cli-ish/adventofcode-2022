@@ -11,15 +11,15 @@ fn main() {
 		n11, n12 := one[0].int(), one[1].int()
 		n21, n22 := two[0].int(), two[1].int()
 		if (n11 <= n21 && n12 >= n22) || (n11 >= n21 && n12 <= n22) {
-			contained +=1
+			contained += 1
 		}
-		if ((n11 >= n21 && n11 <= n22) || (n12 >= n21 && n12 <= n22)) || ((n21 >= n11 && n21 <= n12) || (n22 >= n11 && n22 <= n12)) {
+		if ((n11 >= n21 && n11 <= n22) || (n12 >= n21 && n12 <= n22))
+			|| ((n21 >= n11 && n21 <= n12) || (n22 >= n11 && n22 <= n12)) {
 			overlaped += 1
 		}
 	}
-	println('contain: $contained, overlap: $overlaped')
+	println('contain: ${contained}, overlap: ${overlaped}')
 }
-
 
 fn get_inputs() string {
 	text := os.read_file('input.txt') or {

@@ -19,7 +19,7 @@ fn main() {
 	calories_carried.sort()
 	calories_carried = calories_carried[calories_carried.len - 3..]
 	total := arrays.sum[int](calories_carried)!
-	for i := calories_carried.len -1; i >= 0; i-- {
+	for i := calories_carried.len - 1; i >= 0; i-- {
 		println('${math.abs(i - calories_carried.len)}: ${calories_carried[i]} calories')
 	}
 	println('total: ${total} calories')

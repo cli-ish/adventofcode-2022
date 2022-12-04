@@ -1,6 +1,6 @@
 module main
-import os
 
+import os
 
 fn main() {
 	if os.args.len != 2 {
@@ -18,14 +18,13 @@ fn main() {
 	}
 }
 
-
 fn solution_one(lines []string) int {
 	mut sum := 0
 	for line in lines {
 		if line.len == 0 {
 			continue
 		}
-		half := (line.len/2)
+		half := (line.len / 2)
 		first := line[..half]
 		last := line[half..]
 		for c1 in first.runes() {
@@ -41,10 +40,10 @@ fn solution_one(lines []string) int {
 
 fn solution_two(lines []string) int {
 	mut sum := 0
-	for i := 0; i < lines.len; i+=3 {
+	for i := 0; i < lines.len; i += 3 {
 		line1 := lines[i]
-		line2 := lines[i+1]
-		line3 := lines[i+2]
+		line2 := lines[i + 1]
+		line3 := lines[i + 2]
 		for c1 in line1.runes() {
 			ch := c1.str()
 			if line2.contains(ch) && line3.contains(ch) {
@@ -56,15 +55,13 @@ fn solution_two(lines []string) int {
 	return sum
 }
 
-
 fn calc_score(c u8) int {
 	if c > 90 {
-		return c - 97 + 1 
+		return c - 97 + 1
 	} else {
 		return c - 65 + 1 + 26
 	}
 }
-
 
 fn get_inputs() string {
 	text := os.read_file('input.txt') or {

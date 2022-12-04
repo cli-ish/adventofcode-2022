@@ -1,4 +1,5 @@
 module main
+
 import os
 
 fn main() {
@@ -11,24 +12,24 @@ fn main() {
 	}
 	lines := get_inputs().split('\n')
 	mut score := 0
-	for line in lines{
+	for line in lines {
 		enemy := line[0]
-	 	suggested := line[2]
-	 	if solution {
+		suggested := line[2]
+		if solution {
 			score += calc_score_one(enemy, suggested)
-	 	} else {
+		} else {
 			score += calc_score_two(enemy, suggested)
-	 	}
+		}
 	}
-	println("score: $score")
+	println('score: ${score}')
 }
 
 /**
  * used for part 1
  * returns int (-1 lost,0 draw, 1 won)
- */
- fn calc_score_one(enemy u8, move u8) int {
-	movep := move - 88  + 1
+*/
+fn calc_score_one(enemy u8, move u8) int {
+	movep := move - 88 + 1
 	enemyp := enemy - 65 + 1
 	if movep == enemyp {
 		return 3 + movep
@@ -49,14 +50,14 @@ fn main() {
 /**
  * used for part 2
  * returns int (-1 lost,0 draw, 1 won)
- */
+*/
 fn calc_score_two(enemy u8, move u8) int {
-	movep := move - 88  + 1
+	movep := move - 88 + 1
 	enemyp := enemy - 65 + 1
 	if movep == 2 {
 		return 3 + enemyp
 	}
-    mut movec := 0
+	mut movec := 0
 	if movep == 3 {
 		movec = 2 // by default we assume we get rock so we play paper an get 2 points
 		if enemyp == 2 {
@@ -76,7 +77,6 @@ fn calc_score_two(enemy u8, move u8) int {
 	}
 	return 0 + movec
 }
-
 
 fn get_inputs() string {
 	text := os.read_file('input.txt') or {
