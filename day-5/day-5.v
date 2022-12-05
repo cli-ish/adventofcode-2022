@@ -48,7 +48,7 @@ fn move_tanks_one(mut tanks [][]string, from int, to int, count int) {
 fn get_tanks(part string) [][]string {
 	mut tanks := [][]string{}
 	lines := part.split('\n')
-	sizestr := lines[lines.len - 1].split(' ')
+	sizestr := lines.last().split(' ')
 	size := sizestr[sizestr.len - 2].int()
 	for i := 0; i < size; i++ {
 		mut tanksl := []string{}
