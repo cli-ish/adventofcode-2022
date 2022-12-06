@@ -12,32 +12,26 @@ fn main() {
 		if os.args[1] == 'part-1' {
 			count = 4
 		}
-		res := solution(text, count)
+		res := solution_fn(text, count)
 		println('Result: ${res}')
 	}
 }
 
-fn solution(text string, count int) int {
-	mut res := ''
-	for i := 0; i < text.len; i++ {
-		if i > count {
-			mut matchx := false
-			outer: for i1, x in res.runes() {
-				for i2, y in res.runes() {
-					if y == x && i1 != i2 {
-						matchx = true
-						break outer
-					}
+fn solution_fn(text string, count int) int {
+	for i := count; i < text.len; i++ {
+		res := text[(i - count)..i]
+		mut matchx := false
+		outer: for i1, x in res {
+			for i2 := i1 + 1; i2 < res.len; i2++ {
+				if res[i2] == x {
+					matchx = true
+					break outer
 				}
 			}
-			if !matchx {
-				return i
-			}
 		}
-		if res.len > count - 1 {
-			res = res[1..]
+		if !matchx {
+			return i
 		}
-		res += text[i].ascii_str()
 	}
 	return -1
 }
