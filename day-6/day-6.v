@@ -21,14 +21,14 @@ fn solution(text string, count int) int {
 	for i := count; i < text.len; i++ {
 		// Destinct string took from https://www.geeksforgeeks.org/efficiently-check-string-duplicates-without-using-additional-data-structure/
 		mut abort := true
-		mut m := 0
+		mut m := u32(0)
 		for e := i - count; e < i; e++ {
-			val := (text[e] - 0x61)
-			if (m & (1 << val)) > 0 {
+			val := u32(1 << text[e] - 0x61)
+			if m & val > 0 {
 				abort = false
 				break
 			}
-			m |= (1 << val)
+			m |= val
 		}
 		if abort {
 			return i
