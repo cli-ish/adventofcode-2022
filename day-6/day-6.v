@@ -19,17 +19,18 @@ fn main() {
 
 fn solution(text string, count int) int {
 	for i := count; i < text.len; i++ {
-		res := text[(i - count)..i]
-		mut matchx := false
-		outer: for i1, x in res {
-			for i2 := i1 + 1; i2 < res.len; i2++ {
-				if res[i2] == x {
-					matchx = true
-					break outer
-				}
+		// Destinct string took from https://www.geeksforgeeks.org/efficiently-check-string-duplicates-without-using-additional-data-structure/
+		mut abort := true
+		mut m := 0
+		for e := i - count; e < i; e++ {
+			val := (text[e] - 0x61)
+			if (m & (1 << val)) > 0 {
+				abort = false
+				break
 			}
+			m |= (1 << val)
 		}
-		if !matchx {
+		if abort {
 			return i
 		}
 	}
