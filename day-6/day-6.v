@@ -12,12 +12,12 @@ fn main() {
 		if os.args[1] == 'part-1' {
 			count = 4
 		}
-		res := solution_fn(text, count)
+		res := solution(text, count)
 		println('Result: ${res}')
 	}
 }
 
-fn solution_fn(text string, count int) int {
+fn solution(text string, count int) int {
 	for i := count; i < text.len; i++ {
 		res := text[(i - count)..i]
 		mut matchx := false
