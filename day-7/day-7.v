@@ -27,7 +27,7 @@ fn main() {
 	mut result := []string{}
 	lines := get_inputs().split('\n')
 	for i, line in lines {
-		if i == 0 { // ignore first `cd /` we know its there
+		if i == 0 { // Ignore first `cd /` we know its there
 			continue
 		}
 		if line[0].ascii_str() == '$' {
@@ -51,49 +51,44 @@ fn main() {
 	mut dir := &Dir{0, '/', []&Dir{}, []File{}, 0}
 	for c in list {
 		parts := c.command.split(' ')
-		if parts[0] == 'cd' && parts[1] == '..' {
-			dir = dir.parent
-		} else if parts[0] == 'cd' {
-			mut found := false
+		if parts[0] == 'cd' {
+			if parts[1] == '..' {
+				dir = dir.parent
+				continue
+			}
 			for e, d in dir.subdirs {
 				if d.name == parts[1] {
 					dir = dir.subdirs[e]
-					found = true
 					break
 				}
 			}
-			if !found {
-				mut de := &Dir{dir, parts[1], []&Dir{}, []File{}, 0}
+			continue
+		}
+		// Must be ls
+		for r in c.result {
+			rparts := r.split(' ')
+			if rparts[0] == 'dir' {
+				de := &Dir{dir, rparts[1], []&Dir{}, []File{}, 0}
 				dir.subdirs << de
-				dir = de
-			}
-		} else {
-			// Must be ls
-			for r in c.result {
-				rparts := r.split(' ')
-				if rparts[0] == 'dir' {
-					de := &Dir{dir, rparts[1], []&Dir{}, []File{}, 0}
-					dir.subdirs << de
-				} else {
-					s := rparts[0].int()
-					dir.files << File{rparts[1], s}
-					dir.size += s
+			} else {
+				s := rparts[0].int()
+				dir.files << File{rparts[1], s}
+				dir.size += s
+				unsafe {
+					// We added the size already, no need to travel to nil :)
+					if dir.parent == nil {
+						continue
+					}
+				}
+				mut tmp := dir
+				for true {
 					unsafe {
-						// We added the size allready, no need to traver to nowhere :)
-						if dir.parent == nil {
-							continue
+						if tmp.parent == nil {
+							break
 						}
 					}
-					mut tmp := dir
-					for true {
-						unsafe {
-							if tmp.parent == nil {
-								break
-							}
-						}
-						tmp = tmp.parent
-						tmp.size += s
-					}
+					tmp = tmp.parent
+					tmp.size += s
 				}
 			}
 		}
