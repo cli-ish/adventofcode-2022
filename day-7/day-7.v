@@ -2,44 +2,6 @@ module main
 
 import os
 
-/*
-struct Test {
-	parent &Test
-	name string
-	mut:
-	childs []&Test
-}
-
-fn main() {
-	mut root := &Test{0, 'root', []}
-	println(root.childs)
-	mut node := &Test{root, 'test1', []}
-	root.childs << node
-	println(root.childs)
-	root = node
-	mut node2 := &Test{root, 'test2', []}
-	root.childs << node2
-	println(root.childs)
-	root = node2
-	println("================================")
-	for true {
-		unsafe{
-			println(root)
-			if root.parent == nil {
-				break
-			}
-		}
-		root = root.parent
-	}
-}
-
-fn test(chname string, mut root &Test) {
-	node := &Test{unsafe{root}, chname, []}
-	root.childs << node
-	root = node
-}
-*/
-
 struct File {
 	name string
 	size int
@@ -54,114 +16,84 @@ mut:
 	size    int
 }
 
+struct Cmd {
+	command string
+	result  []string
+}
+
 fn main() {
-	mut root := &Dir{0, '/', []&Dir{}, []File{}, 0}
-	mut dir := root
-	lines := get_inputs().split('\n')
+	mut list := []Cmd{}
 	mut lastcmd := ''
 	mut result := []string{}
+	lines := get_inputs().split('\n')
 	for i, line in lines {
-		if i == 0 {
+		if i == 0 { // ignore first `cd /` we know its there
 			continue
 		}
 		if line[0].ascii_str() == '$' {
 			if lastcmd != '' {
-				parts := lastcmd.split(' ')
-				if parts[0] == 'cd' && parts[1] == '..' {
-					dir = dir.parent
-				} else if parts[0] == 'cd' {
-					mut found := false
-					for e, d in dir.subdirs {
-						if d.name == parts[1] {
-							dir = dir.subdirs[e]
-							found = true
-							break
-						}
-					}
-					if !found {
-						mut de := &Dir{dir, parts[1], []&Dir{}, []File{}, 0}
-						dir.subdirs << de
-						dir = de
-					}
-				}
-				if parts[0] == 'ls' {
-					for r in result {
-						rparts := r.split(' ')
-						if rparts[0] == 'dir' {
-							de := &Dir{dir, rparts[1], []&Dir{}, []File{}, 0}
-							dir.subdirs << de
-						} else {
-							s := rparts[0].int()
-							dir.files << File{rparts[1], s}
-							dir.size += s
-							unsafe {
-								if dir.parent == nil {
-									continue
-								}
-							}
-							mut tmp := dir
-							for true {
-								unsafe {
-									if tmp.parent == nil {
-										break
-									}
-								}
-								tmp = tmp.parent
-								tmp.size += s
-							}
-						}
-					}
+				list << Cmd{
+					command: lastcmd
+					result: result
 				}
 			}
 			lastcmd = line[2..]
-			result.clear()
+			result = []
 		} else {
 			result.prepend(line)
 		}
 	}
-
-	parts := lastcmd.split(' ')
-	if parts[0] == 'cd' && parts[1] == '..' {
-		dir = dir.parent
-	} else if parts[0] == 'cd' {
-		mut found := false
-		for e, d in dir.subdirs {
-			if d.name == parts[1] {
-				dir = dir.subdirs[e]
-				found = true
-				break
-			}
-		}
-		if !found {
-			mut de := &Dir{dir, parts[1], []&Dir{}, []File{}, 0}
-			dir.subdirs << de
-			dir = de
-		}
+	list << Cmd{
+		command: lastcmd
+		result: result
 	}
-	if parts[0] == 'ls' {
-		for r in result {
-			rparts := r.split(' ')
-			if rparts[0] == 'dir' {
-				de := &Dir{dir, rparts[1], []&Dir{}, []File{}, 0}
-				dir.subdirs << de
-			} else {
-				s := rparts[0].int()
-				dir.files << File{rparts[1], s}
-				dir.size += s
-				unsafe {
-					if dir.parent == nil {
-						continue
-					}
+
+	mut dir := &Dir{0, '/', []&Dir{}, []File{}, 0}
+	for c in list {
+		parts := c.command.split(' ')
+		if parts[0] == 'cd' && parts[1] == '..' {
+			dir = dir.parent
+		} else if parts[0] == 'cd' {
+			mut found := false
+			for e, d in dir.subdirs {
+				if d.name == parts[1] {
+					dir = dir.subdirs[e]
+					found = true
+					break
 				}
-				mut tmp := dir
-				for true {
+			}
+			if !found {
+				mut de := &Dir{dir, parts[1], []&Dir{}, []File{}, 0}
+				dir.subdirs << de
+				dir = de
+			}
+		} else {
+			// Must be ls
+			for r in c.result {
+				rparts := r.split(' ')
+				if rparts[0] == 'dir' {
+					de := &Dir{dir, rparts[1], []&Dir{}, []File{}, 0}
+					dir.subdirs << de
+				} else {
+					s := rparts[0].int()
+					dir.files << File{rparts[1], s}
+					dir.size += s
 					unsafe {
-						if tmp.parent == nil {
-							break
+						// We added the size allready, no need to traver to nowhere :)
+						if dir.parent == nil {
+							continue
 						}
 					}
-					tmp = tmp.parent
-					tmp.size += s
+					mut tmp := dir
+					for true {
+						unsafe {
+							if tmp.parent == nil {
+								break
+							}
+						}
+						tmp = tmp.parent
+						tmp.size += s
+					}
 				}
 			}
 		}
