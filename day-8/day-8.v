@@ -42,27 +42,27 @@ fn main() {
 fn calc_score(x int, y int, trees [][]int) int {
 	mut size_curr := trees[y][x]
 	mut up := 0
+	mut left := 0
+	mut down := 0
+	mut right := 0
 	for i := y - 1; i >= 0; i-- {
 		up++
 		if trees[i][x] >= size_curr {
 			break
 		}
 	}
-	mut left := 0
 	for i := x - 1; i >= 0; i-- {
 		left++
 		if trees[y][i] >= size_curr {
 			break
 		}
 	}
-	mut down := 0
 	for i := y + 1; i < trees.len; i++ {
 		down++
 		if trees[i][x] >= size_curr {
 			break
 		}
 	}
-	mut right := 0
 	for i := x + 1; i < trees.len; i++ {
 		right++
 		if trees[y][i] >= size_curr {
@@ -79,25 +79,17 @@ fn is_visible(x int, y int, trees [][]int) bool {
 	mut right := true
 	tree := trees[y][x]
 	for i := 0; i < trees.len; i++ {
-		if y > i {
-			if tree <= trees[i][x] {
-				top = false
-			}
+		if y > i && tree <= trees[i][x] {
+			top = false
 		}
-		if y < i {
-			if tree <= trees[i][x] {
-				bottom = false
-			}
+		if y < i && tree <= trees[i][x] {
+			bottom = false
 		}
-		if x > i {
-			if tree <= trees[y][i] {
-				left = false
-			}
+		if x > i && tree <= trees[y][i] {
+			left = false
 		}
-		if x < i {
-			if tree <= trees[y][i] {
-				right = false
-			}
+		if x < i && tree <= trees[y][i] {
+			right = false
 		}
 	}
 	return left || top || bottom || right
