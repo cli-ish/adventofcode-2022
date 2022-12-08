@@ -27,8 +27,8 @@ fn solution_one(lines []string) int {
 		half := (line.len / 2)
 		first := line[..half]
 		last := line[half..]
-		for c1 in first.runes() {
-			ch := c1.str()
+		for c1 in first {
+			ch := c1.ascii_str()
 			if last.contains(ch) {
 				sum += calc_score(ch[0])
 				break
@@ -41,11 +41,9 @@ fn solution_one(lines []string) int {
 fn solution_two(lines []string) int {
 	mut sum := 0
 	for i := 0; i < lines.len; i += 3 {
-		line1 := lines[i]
-		line2 := lines[i + 1]
-		line3 := lines[i + 2]
-		for c1 in line1.runes() {
-			ch := c1.str()
+		line1, line2, line3 := lines[i], lines[i + 1], lines[i + 2]
+		for c1 in line1 {
+			ch := c1.ascii_str()
 			if line2.contains(ch) && line3.contains(ch) {
 				sum += calc_score(ch[0])
 				break

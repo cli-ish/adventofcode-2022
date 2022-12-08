@@ -1,7 +1,6 @@
 module main
 
 import os
-import arrays
 
 fn main() {
 	mut solution_one := true
@@ -15,9 +14,7 @@ fn main() {
 		mut tanks := get_tanks(parts[0])
 		for line in lines {
 			lpart := line.split(' ')
-			count := lpart[1].int()
-			from := lpart[3].int()
-			to := lpart[5].int()
+			count, from, to := lpart[1].int(), lpart[3].int(), lpart[5].int()
 			if solution_one {
 				move_tanks_one(mut tanks, from, to, count)
 			} else {
@@ -34,14 +31,14 @@ fn main() {
 fn move_tanks_two(mut tanks [][]string, from int, to int, count int) {
 	stuff := tanks[from - 1][(tanks[from - 1].len - count)..]
 	for i := 0; i < count; i++ {
-		tanks[to - 1] = arrays.concat[string](tanks[to - 1], stuff[i])
+		tanks[to - 1] << stuff[i]
 		tanks[from - 1].pop()
 	}
 }
 
 fn move_tanks_one(mut tanks [][]string, from int, to int, count int) {
 	for i := 0; i < count; i++ {
-		tanks[to - 1] = arrays.concat[string](tanks[to - 1], tanks[from - 1].pop())
+		tanks[to - 1] << tanks[from - 1].pop()
 	}
 }
 
@@ -52,7 +49,7 @@ fn get_tanks(part string) [][]string {
 	size := sizestr[sizestr.len - 2].int()
 	for i := 0; i < size; i++ {
 		mut tanksl := []string{}
-		tanks = arrays.concat[[]string](tanks, tanksl)
+		tanks << tanksl
 	}
 	for a, line in lines {
 		if a == lines.len - 1 {

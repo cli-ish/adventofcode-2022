@@ -34,14 +34,7 @@ fn calc_score_one(enemy u8, move u8) int {
 	if movep == enemyp {
 		return 3 + movep
 	}
-
-	if enemyp == 1 && movep != 2 {
-		return 0 + movep
-	}
-	if enemyp == 2 && movep != 3 {
-		return 0 + movep
-	}
-	if enemyp == 3 && movep != 1 {
+	if (enemyp == 1 && movep != 2) || (enemyp == 2 && movep != 3) || (enemyp == 3 && movep != 1) {
 		return 0 + movep
 	}
 	return 6 + movep

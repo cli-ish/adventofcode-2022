@@ -10,7 +10,7 @@ fn main() {
 	for i, line in lines {
 		if line.len == 0 {
 			if i != lines.len - 1 {
-				calories_carried = arrays.concat[int](calories_carried, 0)
+				calories_carried << 0
 			}
 			continue
 		}
