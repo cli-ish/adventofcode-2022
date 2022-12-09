@@ -1,6 +1,15 @@
 module main
 
 import os
+import math
+
+enum Direction as u8 {
+	right
+	left
+	up
+	down
+	wait
+}
 
 struct Point {
 mut:
@@ -8,110 +17,102 @@ mut:
 	y int
 }
 
-struct VisitState {
-mut:
-	initalized bool
-	head       int
-	tail       int
-	start      bool
+fn (mut p Point) move(direction Direction) {
+	match direction {
+		.right { p.x += 1 }
+		.left { p.x -= 1 }
+		.up { p.y += 1 }
+		.down { p.y -= 1 }
+		.wait {}
+	}
+}
+
+fn (p Point) eq(p2 Point) bool {
+	return p.x == p2.x && p.y == p2.y
 }
 
 fn main() {
-	mut world := map[string]VisitState{}
+	if os.args.len != 2 {
+		println('usage: ./day-9 part-1')
+		println('usage: ./day-9 part-2')
+	} else {
+		if os.args[1] == 'part-1' {
+			println(run_with_size(1))
+		} else {
+			println(run_with_size(9))
+		}
+	}
+}
+
+fn run_with_size(tail_length int) int {
+	mut knots := []Point{len: tail_length}
+	mut head := Point{
+		x: 0
+		y: 0
+	}
+	mut visited := map[string]bool{}
+	visited['0,0'] = true
 	lines := get_inputs().split('\n')
-	mut head := Point{x:0, y:0}
-	mut tail := Point{x:0, y:0}
-	world['0,0'] = VisitState{true, 0, 0, true}
-	mut lasthead := head
 	for line in lines {
 		parts := line.split(' ')
-		direction := parts[0]
-		length := parts[1].int()
-		if direction == 'R' {
-			for i := 0; i < length; i++ {
-				lasthead = head
-				head.x++
-				move(mut tail, lasthead, mut head, mut world)
-			}
-		} else if direction == 'U' {
-			for i := 0; i < length; i++ {
-				lasthead = head
-				head.y--
-				move(mut tail, lasthead, mut head, mut world)
-			}
-		} else if direction == 'L' {
-			for i := 0; i < length; i++ {
-				lasthead = head
-				head.x--
-				move(mut tail, lasthead, mut head, mut world)
-			}
-		} else {
-			for i := 0; i < length; i++ {
-				lasthead = head
-				head.y++
-				move(mut tail, lasthead, mut head, mut world)
+		direction := get_direction_from_string(parts[0])
+		distance := parts[1].int()
+		for dis := 0; dis < distance; dis++ {
+			head.move(direction)
+			for i, mut knot in knots {
+				next := if i == 0 { head } else { knots[i - 1] }
+				if !move_needed(knot, next) {
+					continue
+				}
+				if knot.x != next.x && knot.y != next.y {
+					knot.y += if next.y > knot.y { 1 } else { -1 }
+					knot.x += if next.x > knot.x { 1 } else { -1 }
+					tail := knots.last()
+					if knot.eq(tail) {
+						visited['${tail.x},${tail.y}'] = true
+					}
+				}
+				for  {
+					if !move_needed(knot, next) {
+						break
+					}
+					knot.move(get_direction(knot, next))
+					tail := knots.last()
+					if knot.eq(tail) {
+						visited['${tail.x},${tail.y}'] = true
+					}
+				}
 			}
 		}
 	}
-	mut c := 1 // because start is visited too
-	for p, value in world {
-		if value.tail != 0 {
-			c+=1
-			println(p)
-		}
-		
-	}
-	println(c)
+	return visited.len
 }
 
+fn move_needed(p1 Point, p2 Point) bool {
+	return math.abs(p1.x - p2.x) > 1 || math.abs(p1.y - p2.y) > 1
+}
 
-fn move(mut tail Point, lasthead Point, mut head Point, mut world map[string]VisitState) {
-	increase_head(head, mut world)
-	oldtail := tail
-	tail = solve_coverage(head,lasthead,tail)
-	if tail != oldtail {
-		increase_tail(tail, mut world)
+fn get_direction_from_string(dir string) Direction {
+	return match dir {
+		'R' { Direction.right }
+		'L' { Direction.left }
+		'U' { Direction.up }
+		'D' { Direction.down }
+		else { Direction.wait }
 	}
 }
 
-
-fn solve_coverage(head Point, lasthead Point, tail Point) Point {
-	if head.x == tail.x && head.y == tail.y {
-		return tail
+fn get_direction(p Point, target Point) Direction {
+	if p.x > target.x {
+		return Direction.left
+	} else if p.x < target.x {
+		return Direction.right
+	} else if p.y > target.y {
+		return Direction.down
+	} else if p.y < target.y {
+		return Direction.up
 	}
-	if !nearpoint(head, tail) {
-		return lasthead
-	}
-	return tail
-}
-
-fn nearpoint(p1 Point, p2 Point) bool {
-	if p1.x != p2.x - 1 && p1.x != p2.x && p1.x != p2.x +1 {
-		return false
-	}
-	if p1.y != p2.y - 1 && p1.y != p2.y && p1.y != p2.y +1 {
-		return false
-	}
-	return true
-}
-
-fn increase_head(point Point, mut world map[string]VisitState) {
-	mut key := '${point.y},${point.x}'
-	mut p := world[key]
-	if !p.initalized {
-		p.initalized = true
-	}
-	p.head += 1
-	world[key] = p
-}
-fn increase_tail(point Point, mut world map[string]VisitState) {
-	mut key := '${point.y},${point.x}'
-	mut p := world[key]
-	if !p.initalized {
-		p.initalized = true
-	}
-	p.tail += 1
-	world[key] = p
+	return Direction.wait
 }
 
 fn get_inputs() string {
