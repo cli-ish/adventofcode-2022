@@ -10,9 +10,8 @@ enum Command as u8 {
 
 fn main() {
 	lines := get_inputs().split('\n')
-	mut cycle := 0
+	mut cycle, mut sum := 0, 0
 	mut x := 1
-	mut sum := 0
 	mut ui := [][]rune{len: 6, init: []rune{len: 40, init: ` `}}
 	for line in lines {
 		cycle, sum = run_cycle(cycle, sum, x, mut ui)
@@ -25,20 +24,18 @@ fn main() {
 		x += parts[1].int()
 	}
 	for row in ui {
-		for column in row {
-			print(column)
-		}
-		print("\n")
+		println(row.string())
 	}
 	println(sum)
 }
 
 fn run_cycle(cycle int, sum int, x int, mut ui [][]rune) (int, int) {
 	ui[cycle / 40][cycle%40] = if math.abs(x-(cycle%40))<=1 {`#`} else {` `}
-	if (cycle +1 - 20) % 40 == 0 {
-		return cycle + 1, sum + (cycle+1) * x
+	c := cycle +1 
+	if (c - 20) % 40 == 0 {
+		return c, sum + c * x
 	}
-	return cycle + 1, sum 
+	return c, sum 
 }
 
 fn get_command_from_string(dir string) Command {
