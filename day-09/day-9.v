@@ -72,7 +72,7 @@ fn run_with_size(tail_length int) int {
 						visited['${tail.x},${tail.y}'] = true
 					}
 				}
-				for  {
+				for {
 					if !move_needed(knot, next) {
 						break
 					}

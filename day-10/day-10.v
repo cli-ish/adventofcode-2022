@@ -30,12 +30,12 @@ fn main() {
 }
 
 fn run_cycle(cycle int, sum int, x int, mut ui [][]rune) (int, int) {
-	ui[cycle / 40][cycle%40] = if math.abs(x-(cycle%40))<=1 {`#`} else {` `}
-	c := cycle +1 
+	ui[cycle / 40][cycle % 40] = if math.abs(x - (cycle % 40)) <= 1 { `#` } else { ` ` }
+	c := cycle + 1
 	if (c - 20) % 40 == 0 {
 		return c, sum + c * x
 	}
-	return c, sum 
+	return c, sum
 }
 
 fn get_command_from_string(dir string) Command {
