@@ -11,31 +11,37 @@ enum Command as u8 {
 fn main() {
 	lines := get_inputs().split('\n')
 	mut cycle, mut sum := 0, 0
-	mut x := 1
-	mut ui := [][]rune{len: 6, init: []rune{len: 40, init: ` `}}
+	mut x, mut c := 1, ''
 	for line in lines {
-		cycle, sum = run_cycle(cycle, sum, x, mut ui)
+		cycle, sum, c = run_cycle(cycle, sum, x)
+		print(c)
 		parts := line.split(' ')
 		cmd := get_command_from_string(parts[0])
 		if cmd == Command.noop {
 			continue
 		}
-		cycle, sum = run_cycle(cycle, sum, x, mut ui)
+		cycle, sum, c = run_cycle(cycle, sum, x)
+		print(c)
 		x += parts[1].int()
-	}
-	for row in ui {
-		println(row.string())
 	}
 	println(sum)
 }
 
-fn run_cycle(cycle int, sum int, x int, mut ui [][]rune) (int, int) {
-	ui[cycle / 40][cycle % 40] = if math.abs(x - (cycle % 40)) <= 1 { `#` } else { ` ` }
+fn run_cycle(cycle int, sum int, x int) (int, int, string) {
 	c := cycle + 1
-	if (c - 20) % 40 == 0 {
-		return c, sum + c * x
+	return c, if (c - 20) % 40 == 0 {
+		sum + c * x
+	} else {
+		sum
+	}, if math.abs(x - (cycle % 40)) <= 1 {
+		'#'
+	} else {
+		' '
+	} + if c % 40 == 0 {
+		'\n'
+	} else {
+		''
 	}
-	return c, sum
 }
 
 fn get_command_from_string(dir string) Command {
