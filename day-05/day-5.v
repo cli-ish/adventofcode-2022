@@ -5,8 +5,8 @@ import os
 fn main() {
 	mut solution_one := true
 	if os.args.len != 2 {
-		println('usage: ./day-5 part-1')
-		println('usage: ./day-5 part-2')
+		println('usage: ./day-05 part-1')
+		println('usage: ./day-05 part-2')
 	} else {
 		solution_one = os.args[1] == 'part-1'
 		parts := get_inputs().split('\n\n')

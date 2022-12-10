@@ -4,8 +4,8 @@ import os
 
 fn main() {
 	if os.args.len != 2 {
-		println('usage: ./day-3 part-1')
-		println('usage: ./day-3 part-2')
+		println('usage: ./day-03 part-1')
+		println('usage: ./day-03 part-2')
 	} else {
 		lines := get_inputs().split('\n')
 		mut sum := 0

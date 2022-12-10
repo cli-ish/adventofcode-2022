@@ -1,5 +1,5 @@
 Module {
-	name: 'day-4'
+	name: 'day-06'
 	description: ''
 	version: ''
 	license: ''

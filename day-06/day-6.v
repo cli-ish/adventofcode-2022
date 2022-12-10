@@ -4,8 +4,8 @@ import os
 
 fn main() {
 	if os.args.len != 2 {
-		println('usage: ./day-6 part-1')
-		println('usage: ./day-6 part-2')
+		println('usage: ./day-06 part-1')
+		println('usage: ./day-06 part-2')
 	} else {
 		text := get_inputs()
 		mut count := 14

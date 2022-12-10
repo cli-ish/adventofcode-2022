@@ -5,8 +5,8 @@ import os
 fn main() {
 	mut solution := false
 	if os.args.len != 2 {
-		println('usage: ./day-2 part-1')
-		println('usage: ./day-2 part-2')
+		println('usage: ./day-02 part-1')
+		println('usage: ./day-02 part-2')
 	} else {
 		solution = os.args[1] == 'part-1'
 	}

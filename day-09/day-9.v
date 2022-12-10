@@ -33,8 +33,8 @@ fn (p Point) eq(p2 Point) bool {
 
 fn main() {
 	if os.args.len != 2 {
-		println('usage: ./day-9 part-1')
-		println('usage: ./day-9 part-2')
+		println('usage: ./day-09 part-1')
+		println('usage: ./day-09 part-2')
 	} else {
 		if os.args[1] == 'part-1' {
 			println(run_with_size(1))
