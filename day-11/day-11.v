@@ -80,13 +80,13 @@ mut:
 	inspect_count i64
 }
 
-fn (mut m Monkey) round(mut monkeys []Monkey, gcd i64, impl bool) {
+fn (mut m Monkey) round(mut monkeys []Monkey, lcm i64, impl bool) {
 	for mut item in m.items {
 		m.inspect_count++
 		if impl {
 			item = m.operation.calc(item) / 3
 		} else {
-			item = m.operation.calc(*item % gcd) / 1
+			item = m.operation.calc(*item % lcm)
 		}
 		monkeys[m.pass_to_monkey(item)].items << item
 	}
@@ -112,12 +112,12 @@ fn main() {
 		println('usage: ./day-09 part-1')
 		println('usage: ./day-09 part-2')
 	} else {
-		monkeys_raw := get_inputs().split('\n\n')
-		solution(monkeys_raw, os.args[1] == 'part-1')
+		solution(os.args[1] == 'part-1')
 	}
 }
 
-fn solution(monkeys_raw []string, solution_one bool) {
+fn solution(solution_one bool) {
+	monkeys_raw := get_inputs().split('\n\n')
 	mut monkeys := []Monkey{}
 	mut gcd_l := []i64{}
 	for i, monkey_raw in monkeys_raw {
@@ -126,15 +126,15 @@ fn solution(monkeys_raw []string, solution_one bool) {
 		monkeys << m
 		gcd_l << m.divisible
 	}
-	mut gcd := i64(0)
+	mut lcm := i64(0)
 	mut count := 20
 	if !solution_one {
 		count = 10000
-		gcd = lcm_many(gcd_l)
+		lcm = lcm_many(gcd_l)
 	}
 	for i := 0; i < count; i++ {
 		for mut monkey in monkeys {
-			monkey.round(mut monkeys, gcd, solution_one)
+			monkey.round(mut monkeys, lcm, solution_one)
 		}
 	}
 	mut active_list := []i64{}
