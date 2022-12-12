@@ -8,14 +8,14 @@ mut:
 	x i16
 }
 
-fn (p Point) plus(p2 Point) Point {
+fn (p Point) + (p2 Point) Point {
 	return Point{
 		y: p.y + p2.y
 		x: p.x + p2.x
 	}
 }
 
-fn (p Point) eq(p2 Point) bool {
+fn (p Point) == (p2 Point) bool {
 	return p.x == p2.x && p.y == p2.y
 }
 
@@ -109,13 +109,13 @@ fn search_world(world [][]u8, start Point, end Point) i16 {
 	for queue.len > 0 {
 		p, queue = queue[0], queue[1..]
 		for move in directions {
-			n = p.plus(move)
+			n = p + move
 			if n.fit(world.len, world[0].len) || visit[n.y][n.x] != -1
 				|| world[n.y][n.x] - world[p.y][p.x] > 1 {
 				continue
 			}
 			visit[n.y][n.x] = visit[p.y][p.x] + 1
-			if n.eq(end) {
+			if n == end {
 				return visit[n.y][n.x]
 			}
 			queue << n
