@@ -76,19 +76,19 @@ fn solution_one(world [][]u8, start Point, end Point) i16 {
 fn solution_two(world [][]u8, start Point, end Point) i16 {
 	mut threads := []thread i16{}
 	for y, yline in world {
-		d:= spawn fn (y i16, yline []u8, world [][]u8, end Point) i16 {
-			mut l:= []i16{}
+		d := spawn fn (y i16, yline []u8, world [][]u8, end Point) i16 {
+			mut l := []i16{}
 			for x, v in yline {
 				if v != 0 {
 					continue
 				}
 				l << search_world(world, Point{ y: i16(y), x: i16(x) }, end)
 			}
-			return arrays.min(l) or {0}
+			return arrays.min(l) or { 0 }
 		}(i16(y), yline, world, end)
 		threads << d
 	}
-	v := arrays.min(threads.map(it.wait())) or {i16(0)}
+	v := arrays.min(threads.map(it.wait())) or { i16(0) }
 	return v
 }
 
