@@ -7,7 +7,6 @@ mut:
 	has_value  bool
 	value      int
 	list       []Item
-	is_divider bool
 }
 
 fn parse(line string, start_pos int) (Item, int) {
@@ -99,7 +98,6 @@ fn solution_two(items []Item) int {
 	mut divs, mut index_list := []Item{}, []int{}
 	for i, v in [2, 6] {
 		divs << Item{
-			is_divider: true
 			list: [
 				Item{
 					list: [Item{
